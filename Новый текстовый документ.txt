@@ -1,0 +1,102 @@
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
+#include <NTPClient.h>
+#include <TimeLib.h>
+#include <WiFiUdp.h>
+
+const char* ssid = "TP-Link_AF84";
+const char* password = "20000411lav";
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "ru.pool.ntp.org", 3600, 60000);
+char Time[] = "TIME:00:00:00";
+char Date[] = "DATE:00/00/2000";
+byte last_second, second_, minute_, hour_, day_, month_;
+int year_;
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("");
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+}
+ 
+void loop() {
+  pinMode(2, INPUT);
+  timeClient.update();
+  unsigned long unix_epoch = timeClient.getEpochTime();
+  second_ = second(unix_epoch);
+  
+  if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
+    // Generate JSON
+    StaticJsonDocument<500> doc;
+    doc["id"] = 1;
+    if (last_second != second_) {
+      minute_ = minute(unix_epoch);
+      hour_   = hour(unix_epoch);
+      day_    = day(unix_epoch);
+      month_  = month(unix_epoch);
+      year_   = year(unix_epoch);
+ 
+      Time[12] = second_ % 10 + 48;
+      Time[11] = second_ / 10 + 48;
+      Time[9]  = minute_ % 10 + 48;
+      Time[8]  = minute_ / 10 + 48;
+      Time[6]  = hour_   % 10 + 48;
+      Time[5]  = hour_   / 10 + 48;
+ 
+      Date[5]  = day_   / 10 + 48;
+      Date[6]  = day_   % 10 + 48;
+      Date[8]  = month_  / 10 + 48;
+      Date[9]  = month_  % 10 + 48;
+      Date[13] = (year_   / 10) % 10 + 48;
+      Date[14] = year_   % 10 % 10 + 48;
+    }
+    last_second = second_;
+    doc["date"] = Date;
+    doc["time"] = Time;
+    if (digitalRead(2) == HIGH){
+      doc["move"] = 1;
+    } else {
+      doc["move"] = 0;
+    }
+//    JsonArray values = JSONbuffer.createNestedArray("values"); //JSON array
+//    values.add(20); //Add value to array
+//    values.add(21); //Add value to array
+//    values.add(23); //Add value to array
+// 
+//    JsonArray timestamps = JSONbuffer.createNestedArray("timestamps"); //JSON array
+//    timestamps.add("10:10"); //Add value to array
+//    timestamps.add("10:20"); //Add value to array
+//    timestamps.add("10:30"); //Add value to array
+ 
+    char JSONmessageBuffer[300];
+    serializeJsonPretty(doc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
+    Serial.println(JSONmessageBuffer);
+    
+    WiFiClient client; 
+    Serial.print("Requesting POST: ");
+    HTTPClient http;
+    http.begin(client, "http://192.168.0.139:5000/post_json");
+    http.addHeader("Content-Type", "application/json");  //Specify content-type header
+ 
+    int httpCode = http.POST(JSONmessageBuffer);   //Send the request
+    String payload = http.getString();                                        //Get the response payload
+ 
+    Serial.println(httpCode);   //Print HTTP return code
+    Serial.println(payload);    //Print request response payload
+ 
+    http.end();  //Close connection
+ 
+  } else {
+    Serial.println("Error in WiFi connection");
+  }
+  delay(30000);  //Send a request every 30 seconds
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+<h1>Tmp table</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Move?</th>
+    </tr>
+    {% for item in lists %}
+        <tr>
+            <td>{{ item['id'] }}</td>
+            <td>{{ item['date_'] }}</td>
+            <td>{{ item['time_'] }}</td>
+            {% if item['move_'] %}
+                <td>Yes</td>
+            {% else %}
+                <td>No</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>

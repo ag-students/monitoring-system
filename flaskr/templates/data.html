@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+<h1>Data about move</h1>
+<div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>ID room</th>
+            <th>Date</th>
+            <th>Time (in seconds)</th>
+            <th>Interval of day</th>
+            <th>Is abnormal?</th>
+        </tr>
+        {% for item in lists %}
+            <tr>
+                <td>{{ item['id'] }}</td>
+                <td>{{ item['id_room'] }}</td>
+                <td>{{ item['date_'] }}</td>
+                <td>{{ item['time_'] }}</td>
+                {% if item['interval_day'] == 0 %}
+                    <td style=>Night</td>
+                {% elif item['interval_day'] == 1 %}
+                    <td style=>Morning</td>
+                {% elif item['interval_day'] == 2 %}
+                    <td style=>Day</td>
+                {% elif item['interval_day'] == 3 %}
+                    <td style=>Evening</td>
+                {% endif %}
+                {% if not item['is_abnormal'] %}
+                    <td style="color:red">
+                     YES
+                    </td>
+                {% else %}
+                    <td>No</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
