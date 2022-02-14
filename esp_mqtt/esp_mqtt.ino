@@ -5,19 +5,23 @@
 #include <TimeLib.h>
 #include <WiFiUdp.h>
 
-const char *ssid            = "TP-Link_AF84";
-const char *password        = "20000411lav";
+// Global for Wi-Fi & MQTT
+const String  client_id              = "esp8266-client-" + WiFi.macAddress();
+const char   *ssid           PROGMEM = "TP-Link_AF84";
+const char   *password       PROGMEM = "20000411lav";
+const char   *mqtt_broker    PROGMEM = "broker.emqx.io";
+const char   *topic          PROGMEM = "ololo/pir_data";
+const char   *mqtt_username  PROGMEM = "esp8266";
+const char   *mqtt_password  PROGMEM = "20000411lav";
+const int     mqtt_port      PROGMEM = 1883;
 
-const char *mqtt_broker     = "broker.emqx.io";
-const char *topic           = "my_unic_topic_16.32";
-const char *mqtt_username   = "esp8266";
-const char *mqtt_password   = "20000411lav";
-const int   mqtt_port       = 1883;
-
-char        Time[]          = "00:00:00";
-char        Date[]          = "00/00/2000";
-int         year_;
-byte        last_second, second_, minute_, hour_, day_, month_;
+// Global for Time
+      char    Time[]                 = "00:00:00";
+      char    Date[]                 = "00/00/2000";
+      int     time_delay             = 2000; // Timer
+      int     year_;
+      int     id_room;
+      byte    last_second, second_, minute_, hour_, day_, month_;
 
 WiFiClient      espClient;
 PubSubClient    client(espClient);
@@ -37,17 +41,14 @@ void setup() {
     
     client.setServer(mqtt_broker, mqtt_port);
     client.setCallback(callback);
-    // char *client_id = "esp8266-client-";
-    // strcat(client_id, (WiFi.macAddress()).c_str());
-    // Serial.println(client_id);
-    String client_id = "esp8266-client-";
-    client_id += String(WiFi.macAddress());
-    Serial.printf("The client %s connects to the public mqtt broker\n", client_id.c_str());
+    Serial.println();
+
+    Serial.println(client_id);
     while (!client.connected()) {
         if (client.connect(client_id.c_str(), mqtt_username, mqtt_password)) {
-            Serial.println("Public emqx mqtt broker connected");
+            Serial.println("Broker connected");
         } else {
-            Serial.print("failed with state ");
+            Serial.print("faile: ");
             Serial.println(client.state());
             delay(2000);
         }
@@ -56,66 +57,84 @@ void setup() {
     client.subscribe("esp/setup");
 }
 
+// Callback for new ID
 void callback(char *topic, byte *payload, unsigned int length) {
     Serial.print("Message arrived in topic: ");
     Serial.println(topic);
-    Serial.print("Message:");
-    for (int i = 0; i < length; i++) {
-        Serial.print((char) payload[i]);
+    Serial.println("Message:");
+
+    StaticJsonDocument <256> doc;
+    deserializeJson(doc, payload);
+
+    if (WiFi.macAddress().c_str() == doc["mac"]) {
+        id_room = doc["id"];
     }
+    char JSONmessageBuffer[256];
+    serializeJsonPretty(doc, JSONmessageBuffer, 256);
+
+    Serial.println(JSONmessageBuffer);
     Serial.println();
     Serial.println("-----------------------");
+    time_delay = 0;
 }
 
-void loop() {
-    pinMode(2, INPUT);
-    timeClient.update();
+// Send message in topic ololo/pir_data
+void send_message() {
+    StaticJsonDocument<500> doc;
     unsigned long unix_epoch = timeClient.getEpochTime();
-    second_ = second(unix_epoch);  
+    
+    if (id_room != 0 && time_delay == 0) {
+        second_  = second(unix_epoch);
+        minute_  = minute(unix_epoch);
+        hour_    = hour(unix_epoch);
+        day_     = day(unix_epoch);
+        month_   = month(unix_epoch);
+        year_    = year(unix_epoch);
 
-    if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
-        // Generate JSON
-        StaticJsonDocument<500> doc;
-        // id of room
-        doc["id"] = 1;
-        if (last_second != second_) {
-            minute_  = minute(unix_epoch);
-            hour_    = hour(unix_epoch);
-            day_     = day(unix_epoch);
-            month_   = month(unix_epoch);
-            year_    = year(unix_epoch);
+        Time[7]  = second_ % 10 + 48;
+        Time[6]  = second_ / 10 + 48;
+        Time[4]  = minute_ % 10 + 48;
+        Time[3]  = minute_ / 10 + 48;
+        Time[1]  = hour_   % 10 + 48;
+        Time[0]  = hour_   / 10 + 48;
 
-            Time[7]  = second_ % 10 + 48;
-            Time[6]  = second_ / 10 + 48;
-            Time[4]  = minute_ % 10 + 48;
-            Time[3]  = minute_ / 10 + 48;
-            Time[1]  = hour_   % 10 + 48;
-            Time[0]  = hour_   / 10 + 48;
+        Date[0]  = day_    / 10 + 48;
+        Date[1]  = day_    % 10 + 48;
+        Date[3]  = month_  / 10 + 48;
+        Date[4]  = month_  % 10 + 48;
+        Date[8]  = (year_  / 10) % 10 + 48;
+        Date[9]  = year_   % 10 % 10 + 48;
 
-            Date[0]  = day_   / 10 + 48;
-            Date[1]  = day_   % 10 + 48;
-            Date[3]  = month_  / 10 + 48;
-            Date[4]  = month_  % 10 + 48;
-            Date[8]  = (year_   / 10) % 10 + 48;
-            Date[9]  = year_   % 10 % 10 + 48;
-        }
-        last_second = second_;
+        doc["id"] = id_room;
         doc["date"] = Date;
         doc["time"] = Time;
-        if (digitalRead(2) == HIGH){
-            doc["move"] = 1;
 
+        if (digitalRead(2) == HIGH) {
+            doc["move"] = 1;
         } else {
             doc["move"] = 0;
         }
         char JSONmessageBuffer[300];
-        serializeJsonPretty(doc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
+        serializeJsonPretty(doc, JSONmessageBuffer, 300);
         Serial.println(JSONmessageBuffer);
 
         client.publish(topic, JSONmessageBuffer);
+        time_delay = 2000;
+    }
+    time_delay --;
+    delay(10);
+}
+
+void loop() {
+    pinMode(2, INPUT);
+    // Update time & date
+    while(!timeClient.update()) {
+        timeClient.forceUpdate();
+    }
+    if (WiFi.status() == WL_CONNECTED) {
+        send_message();
     } else {
         Serial.println("Error in WiFi connection");
     }
-    delay(5000);  //Send a request every 20 seconds
     client.loop();
 }
