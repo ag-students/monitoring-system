@@ -1,6 +1,10 @@
 from .db import get_db
 import datetime
 from . import gpio
+from . import timer
+
+global ID_PREV
+ID_PREV = 0
 
 # intervals of days:
 def check_interval(time):
@@ -20,6 +24,62 @@ def check_interval(time):
     # 18:00 - 00:00 -- evening [3]
     if 18 <= hour[0] < 24:
         return 3
+
+def insert_into_tmp(content):
+    db = get_db()
+    db.execute(
+        "INSERT INTO tmp_1 (date_, time_, move_) VALUES (?, ?, ?)",
+        (content['date'], content['time'], content['move'])
+    )
+    db.commit()
+
+def handler(content, interval_day):
+    global ID_PREV
+
+    if content['move'] == 1:
+        if content['id'] == ID_PREV:
+            print('Move; ID prev ', ID_PREV, '; ID cur ', content['id'])
+            timer.check_time_moveless(content['id'], interval_day)
+            insert_into_tmp(content)
+        else:
+            print('Move; ID prev ', ID_PREV, '; ID cur ', content['id'])
+            collapse(ID_PREV, False)
+            ID_PREV = content['id']
+            insert_into_tmp(content)
+    else:
+        print('No move; ID prev ', ID_PREV, '; ID cur ', content['id'])
+        timer.check_time_moveless(content['id'], interval_day)
+
+    # if content['id'] == 1:
+    #     if content['move'] == 1:
+    #         if ID_PREV == 1:
+    #             ID_PREV = 1
+    #             print('1_1_1')
+    #             timer.check_time_moveless(content['id'], interval_day)
+    #             insert_into_tmp(content)
+    #         else:
+    #             print('1_1_2')
+    #             collapse(ID_PREV, False)
+    #             ID_PREV = content['id']
+    #             insert_into_tmp(content)                    
+    #     elif ID_PREV == 1:
+    #         print('1_2')
+    #         timer.check_time_moveless(content['id'], interval_day)
+    # elif content['id'] == 2:
+    #     if content['move'] == 1:
+    #         if ID_PREV == 2:
+    #             ID_PREV = 2
+    #             print('2_1_1')
+    #             timer.check_time_moveless(content['id'], interval_day)
+    #             insert_into_tmp(content)
+    #         else:
+    #             print('2_1_2')
+    #             collapse(ID_PREV, False)
+    #             ID_PREV = content['id']
+    #             insert_into_tmp(content)                    
+    #     elif ID_PREV == 2:
+    #         print('2_2')
+    #         timer.check_time_moveless(content['id'], interval_day)
 
 
 def verification(time, id_room, interval_day):

@@ -1,5 +1,5 @@
 from .db import get_db
-from . import data_processing
+from . import data_handling
 import datetime
 
 def check_time_moveless(id_room, interval_day):
@@ -26,4 +26,4 @@ def check_time_moveless(id_room, interval_day):
     diff = int((real_time - last_datetime).total_seconds())
     print(diff)
     if diff >= timer_sample['timer']:
-        data_processing.collapse(id_room, True, diff)
+        data_handling.collapse(id_room, True, diff)
