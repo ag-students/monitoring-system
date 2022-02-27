@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+<h1>Init new ID room</h1>
+<div>
+    <form method="post">
+        <label for="mac"> Choose mac-address</label>
+        <br>
+        <select name="mac" id="mac" required>
+            <option value="BC:FF:4D:35:A1:6E">BC:FF:4D:35:A1:6E room #1</option>
+            <option value="BC:FF:4D:35:46:22">BC:FF:4D:35:46:22 room #2</option>
+        </select>
+        <br>
+        <label for="id_room">Input id room</label>
+        <br>
+        <input type="text" name="id_room" value="{{ request.form['id_room'] }}" required>
+        <br>
+        <input type="submit" value="Save">
+    </form>
+</div>

@@ -10,10 +10,10 @@
     </tr>
     {% for item in lists %}
         <tr>
-            <td>{{ item['id'] }}</td>
-            <td>{{ item['date_'] }}</td>
-            <td>{{ item['time_'] }}</td>
-            {% if item['move_'] %}
+            <td>{{ item.id }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.time }}</td>
+            {% if item.move %}
                 <td>Yes</td>
             {% else %}
                 <td>No</td>

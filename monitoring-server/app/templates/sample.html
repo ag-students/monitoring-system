@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+<h1>Tmp table</h1>
+<table>
+    <tr>
+        <th>ID room</th>
+        <th>Part day</th>
+        <th>Time diff</th>
+        <th>Timer</th>
+    </tr>
+    {% for item in lists %}
+        <tr>
+            <td>{{ item.id_room }}</td>
+            {% if item.day_part == 0 %}
+                <td style=>Night</td>
+            {% elif item.day_part == 1 %}
+                <td style=>Morning</td>
+            {% elif item.day_part == 2 %}
+                <td style=>Day</td>
+            {% elif item.day_part == 3 %}
+                <td style=>Evening</td>
+            {% endif %}
+            <td>{{ item.time_diff }}</td>
+            <td>{{ item.timer }}</td>
+        </tr>
+    {% endfor %}
+</table>
