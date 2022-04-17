@@ -1,10 +1,12 @@
-from datetime import date
 import os
 import json
 import paho.mqtt.client as mqtt
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+
+global USER_EMAIL
+USER_EMAIL = ''
 
 PROJECT_ROOT        = os.path.abspath(os.path.dirname(__file__))
 MQTT_BROKER_URL     = "localhost"

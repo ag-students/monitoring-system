@@ -1,3 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #353836;
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+header a {
+  text-decoration: none;
+}
+
+header {
+  padding: 0 20px;
+  background-color: #1d1f1d;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#brand {
+  font-weight: bold;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+}
+
+#brand a {
+  color: white;
+}
+
+.nav-button{
+  border-radius: 5px;
+  padding: 5px 8px;
+  border: 1px solid #498afb;
+}
+
+.nav-button a{
+  color: #498afb;
+}
+
+ul {
+  list-style: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+ul a {
+  color: white;
+}
+
+ul li {
+  padding: 5px;
+  margin-left: 10px;
+}
+
+ul li:hover {
+  transform: scale(1.1);
+  transition: 0.3s;
+}
+
+#hamburger-icon {
+  margin: auto 0;
+  display: none;
+  cursor: pointer;
+}
+
+#hamburger-icon div {
+  width: 35px;
+  height: 3px;
+  background-color: white;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.open .bar1 {
+  -webkit-transform: rotate(-45deg) translate(-6px, 6px);
+  transform: rotate(-45deg) translate(-6px, 6px);
+}
+
+.open .bar2 {
+  opacity: 0;
+}
+
+.open .bar3 {
+  -webkit-transform: rotate(45deg) translate(-6px, -8px);
+  transform: rotate(45deg) translate(-6px, -8px);
+}
+
+.open .mobile-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  height: calc(100vh - 50px);
+  width: 100%;
+  background-color: #1d1f1d;
+}
+
+.mobile-menu li {
+  margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  header nav {
+    display: none;
+  }
+
+  #hamburger-icon {
+    display: block;
+  }
+}
+
 table {
   align-content: center;
   table-layout: fixed;
@@ -6,7 +134,7 @@ table {
   }
   
 th, td:first-child {
-  background: #AFCDE7;
+  background: #00325e;
   color: white;
   padding: 10px 20px;
 }
@@ -14,10 +142,72 @@ th, td:first-child {
 th, td {
   border-style: solid;
     border-width: 0 1px 1px 0;
-    border-color: white;
+    border-color: rgb(0, 16, 87);
   }
 
-td{
-  background: #D8E6F3;
-    /* text-align: center; */
+.form{
+  margin: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  background-color: #00325e;
+  color: white;
+  display: block;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px rgb(0, 16, 87) solid;
+}
+
+input:hover{
+  border: 1px rgb(0, 16, 87) solid; 
+}
+
+.form-button{
+  border-radius: 5px;
+  padding: 5px 8px;
+  border: 1px solid rgb(0, 16, 87);
+  color: white;
+  font-size: 20px;
+}
+
+.form-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-row input{
+  width: 15%;
+}
+
+.box select {
+  background-color: #00325e;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  font-size: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+}
+
+.button{
+  text-decoration: none;
+  background-color: #00325e;
+  margin-top: 20px;
+  border-radius: 5px;
+  padding: 5px 8px;
+  border: 1px solid rgb(0, 16, 87);
+  color: white;
+  font-size: 20px;
+}
+
+.box select option {
+  padding: 30px;
 }

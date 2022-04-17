@@ -1,23 +1,26 @@
-<!DOCTYPE html>
-<link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
-<h1>Tmp table</h1>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Move?</th>
-    </tr>
-    {% for item in lists %}
+{% extends "base.html" %}
+
+{% block content %}
+    <link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+    <h2>Tmp table</h2>
+    <table>
         <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.time }}</td>
-            {% if item.move %}
-                <td>Yes</td>
-            {% else %}
-                <td>No</td>
-            {% endif %}
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Move?</th>
         </tr>
-    {% endfor %}
-</table>
+        {% for item in lists %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.time }}</td>
+                {% if item.move %}
+                    <td>Yes</td>
+                {% else %}
+                    <td>No</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}    

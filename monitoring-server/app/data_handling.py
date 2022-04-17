@@ -1,5 +1,5 @@
 import datetime
-from app import gpio, timer, db
+from app import gpio, timer, db, mailer
 from app.models import Tmp, myData, sampleData
 
 global ID_PREV
@@ -50,12 +50,14 @@ def handler(content, interval_day):
 
 def verification(time, id_room, day_part):
     print('Verification run')
+    global USER_EMAIL
     sample = sampleData.query.filter_by(id_room = id_room, 
                                         day_part = day_part).first()
     # compare with diff
     if time <= sample.time_diff:
         return True
     else:
+        mailer.send_mail(USER_EMAIL)
         # gpio.run_pwm()
         return False
 
@@ -63,6 +65,7 @@ def verification(time, id_room, day_part):
 # collapse tmp table and run verification
 def collapse(id_room, err, timer_time = 0):
     print('Collapse run')
+    global USER_EMAIL
     first_row = Tmp.query.first()
     last_row  = Tmp.query.order_by(Tmp.id.desc()).first()
 
@@ -106,5 +109,6 @@ def collapse(id_room, err, timer_time = 0):
                       is_abnormal = False)
         db.session.add(data)
         db.session.commit()
+        mailer.send_mail(USER_EMAIL)
         # gpio.run_pwm()
         return

@@ -1,6 +1,6 @@
 import click
-from app import app, db
-from app.models import Tmp, myData, sampleData, create_sample_list
+from app import app, db, sample_data
+from app.models import Tmp, myData, sampleData
 
 @app.cli.group()
 def database():
@@ -8,7 +8,7 @@ def database():
 
 @database.command()
 def init_sample_data():
-    list = create_sample_list()
+    list = sample_data.create_sample_list()
     db.session.add_all(list)
     db.session.commit()
     click.echo('sample data init')

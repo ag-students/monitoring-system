@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+    <form method="post">
+        <h2> Choose mac-address</h2>
+        <div class="box">
+            <select name="mac" id="mac" required>
+                <option value="BC:FF:4D:35:A1:6E">BC:FF:4D:35:A1:6E room #1</option>
+                <option value="BC:FF:4D:35:46:22">BC:FF:4D:35:46:22 room #2</option>
+            </select>
+        </div>
+        
+        <h2>Night</h2>
+        <div class="form-row">
+            <label for="night-time">Time diff</label>
+            <input type="text" 
+                   name="night-time" 
+                   required
+                   value="{{ request.form['night-time'] }}">
+            
+            <label for="night-timer">Timer</label>
+            <input type="text" 
+                   name="night-timer" 
+                   required
+                   value="{{ request.form['night-timer'] }}">
+        </div>
+
+        <h2>Morning</h2>
+        <div class="form-row">
+            <label for="morning-time">Time diff</label>
+            <input type="text" 
+                   name="morning-time"
+                   required 
+                   value="{{ request.form['morning-time'] }}">
+
+            <label for="morning-timer">Timer</label>
+            <input type="text" 
+                   name="morning-timer" 
+                   required
+                   value="{{ request.form['morning-timer'] }}">
+        </div>
+        
+        <h2>Day</h2>
+        <div class="form-row">
+            <label for="day-time">Time diff</label>
+            <input type="text" 
+                   name="day-time" 
+                   required
+                   value="{{ request.form['day-time'] }}">
+
+            <label for="day-timer">Timer</label>
+            <input type="text" 
+                   name="day-timer" 
+                   required
+                   value="{{ request.form['day-timer'] }}">
+        </div>
+        
+        <h2>Evening</h2>
+        <div class="form-row">
+            <label for="evening-time">Time diff</label>
+            <input type="text" 
+                   name="evening-time"
+                   required 
+                   value="{{ request.form['evening-time'] }}">
+
+            <label for="evening-timer">Timer</label>
+            <input type="text" 
+                   name="evening-timer" 
+                   required
+                   value="{{ request.form['evening-timer'] }}">
+        </div>
+        <br>
+        <input type="submit" value="Save" class="form-button">
+    </form>
+{% endblock %}    
