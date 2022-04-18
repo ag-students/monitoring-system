@@ -44,8 +44,8 @@ migrate = Migrate(app, db)
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    for item in SETUP_ESP:
-        client.publish('esp/setup', item)
+    # for item in SETUP_ESP:
+    #     client.publish('esp/setup', item)
     client.subscribe('ololo/pir_data')
 
 def on_message(client, userdata, message):

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+    <h2>User information</h2>
+    <form method="post">
+        <label for="night-time">Name</label>
+        <input type="text" 
+               name="name" 
+               required
+               value={{lists.name}}
+        >
+        <label for="night-time">Surname</label>
+        <input type="text" 
+               name="surname" 
+               required
+               value={{lists.surname}}
+        >
+        <label for="night-time">Address</label>
+        <input type="text" 
+               name="address" 
+               required
+               value={{lists.address}}
+        >           
+        <label for="id_room">Input email</label>
+        <br>
+        <input type="email" 
+               name="email" 
+               required
+               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+               title="Email shoud contain @"
+               value={{lists.e_mail}}
+        >
+        <br>
+        <input type="submit" value="Save" class="form-button">
+    </form>
+{% endblock %}    

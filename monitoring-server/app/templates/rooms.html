@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link href="{{ url_for('static', filename = 'styles.css') }}" rel="stylesheet">
+    <h2>Rooms information</h2>
+    <table>
+        <tr>
+            <th>ID room</th>
+            <th>MAC address</th>
+            <th>User</th>
+        </tr>
+        {% for item in lists %}
+            <tr>
+                <td>{{ item.id_room }}</td>
+                <td>{{ item.mac }}</td>
+                <td>{{ item.user.e_mail }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="/edit-rooms" class="button">Edit</a>
+{% endblock %}

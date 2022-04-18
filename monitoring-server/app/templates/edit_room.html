@@ -16,18 +16,9 @@
         <br>
         <input type="text" 
                name="id_room" 
-               value="{{ request.form['id_room'] }}">
-        <br>
-        <label for="id_room">Input email</label>
-        <br>
-        <input type="email" 
-               name="email" 
-               value="{{ request.form['email'] }}" 
                required
-               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-               title="Email shoud contain @"
-        >
+               value="{{ request.form['id_room'] }}">
         <br>
         <input type="submit" value="Save" class="form-button">
     </form>
-{% endblock %}    
+{% endblock %}  
