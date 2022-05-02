@@ -9,10 +9,10 @@
 const String  client_id              = "esp8266-client-" + WiFi.macAddress();
 const char   *ssid           PROGMEM = "TP-Link_AF84";
 const char   *password       PROGMEM = "20000411lav";
-const char   *mqtt_broker    PROGMEM = "broker.emqx.io";
+const char   *mqtt_broker    PROGMEM = "192.168.0.139";
 const char   *topic          PROGMEM = "ololo/pir_data";
-const char   *mqtt_username  PROGMEM = "esp8266";
-const char   *mqtt_password  PROGMEM = "20000411lav";
+const char   *mqtt_username  PROGMEM = "ololo534";
+const char   *mqtt_password  PROGMEM = "5073";
 const int     mqtt_port      PROGMEM = 1883;
 
 // Global for Time
