@@ -1,8 +1,8 @@
-"""new db
+"""my database
 
-Revision ID: f6b82914d3cb
+Revision ID: 02aa23120050
 Revises: 
-Create Date: 2022-04-18 00:13:57.775665
+Create Date: 2022-05-03 17:42:10.226300
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f6b82914d3cb'
+revision = '02aa23120050'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,7 +37,7 @@ def upgrade():
     sa.Column('id_room', sa.Integer(), nullable=False),
     sa.Column('mac', sa.String(length=20), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id_room')
     )
     op.create_table('my_data',
@@ -47,7 +47,7 @@ def upgrade():
     sa.Column('time', sa.String(length=10), nullable=False),
     sa.Column('day_part', sa.Integer(), nullable=False),
     sa.Column('is_abnormal', sa.Boolean(), nullable=False),
-    sa.ForeignKeyConstraint(['id_room'], ['rooms.id_room'], ),
+    sa.ForeignKeyConstraint(['id_room'], ['rooms.id_room'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('sample_data',
@@ -56,7 +56,7 @@ def upgrade():
     sa.Column('day_part', sa.Integer(), nullable=False),
     sa.Column('time_diff', sa.Integer(), nullable=False),
     sa.Column('timer', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['id_room'], ['rooms.id_room'], ),
+    sa.ForeignKeyConstraint(['id_room'], ['rooms.id_room'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

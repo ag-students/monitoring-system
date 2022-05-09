@@ -1,5 +1,5 @@
 import click
-from app import app, db, sample_data
+from app import app, db, sample_data, cloud_db
 from app.models import Tmp, myData, sampleData, Users, Rooms
 
 @app.cli.group()
@@ -54,3 +54,22 @@ def recreate_rooms():
     db.session.add(r2)
     db.session.commit()
     click.echo('Rooms is clear')
+
+@app.cli.group()
+def cloud():
+    pass
+
+@cloud.command()
+def test():
+    session = cloud_db.run()
+    cloud_db.upsert_user(session)
+
+@cloud.command()
+def init_rooms():
+    session = cloud_db.run()
+    cloud_db.upsert_rooms(session)
+    
+@cloud.command()
+def init_sample():
+    session = cloud_db.run()
+    cloud_db.upsert_sample(session)
