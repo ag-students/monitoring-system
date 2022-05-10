@@ -9,7 +9,7 @@ global USER_EMAIL
 USER_EMAIL = ''
 
 PROJECT_ROOT        = os.path.abspath(os.path.dirname(__file__))
-MQTT_BROKER_URL     = "localhost"
+MQTT_BROKER_URL     = "192.168.0.139"
 MQTT_BROKER_PORT    = 1883
 MQTT_CLIENT_ID      = 'flask_mqtt'
 MQTT_CLEAN_SESSION  = True

@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  flask:
+    volumes:
+      - '.:/monitoring-server:cached'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      FLASK_APP: monitoring-server.py
+    command: flask run --host=0.0.0.0
+    ports:
+      - "0.0.0.0:8000:5000"
+  
